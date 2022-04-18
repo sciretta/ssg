@@ -1,5 +1,6 @@
 import express from "express";
 import fs from "fs";
+import fetch from "node-fetch";
 import path from "path";
 
 import React from "react";
@@ -12,18 +13,49 @@ const PORT = 3000;
 const app = express();
 
 app.use("^/$", (req, res, next) => {
-  fs.readFile(path.resolve("./build/index.html"), "utf-8", (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).send("Some error happened");
-    }
-    return res.send(
-      data.replace(
-        '<div id="root"></div>',
-        `<div id="root">${ReactDOMServer.renderToString(<App />)}</div>`
+  fs.readFile(
+    path.resolve("./build/index.html"),
+    "utf-8",
+    async (err, data) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("Some error happened");
+      }
+
+      const fetchRes = await fetch(
+        "https://rickandmortyapi.com/api/character/?page=1"
       )
-    );
-  });
+        .then((response) => response.json())
+        .then((data: any) =>
+          data.results.map(
+            (character: {
+              id: string;
+              image: string;
+              name: string;
+              url: string;
+            }) => ({
+              id: character.id,
+              img: character.image,
+              name: character.name,
+              url: character.url,
+            })
+          )
+        )
+        .catch((err) => {
+          console.log(err);
+          return [];
+        });
+
+      return res.send(
+        data.replace(
+          '<div id="root"></div>',
+          `<div id="root">${ReactDOMServer.renderToString(
+            <App initialCharacters={fetchRes} />
+          )}</div>`
+        )
+      );
+    }
+  );
 });
 
 app.use(express.static(path.resolve(__dirname, "..", "build")));

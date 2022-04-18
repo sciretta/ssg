@@ -1,25 +1,59 @@
-import React from "react";
-// import "./App.css";
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = React.useState(0);
+type Character = {
+  id: number;
+  img: string;
+  name: string;
+  url: string;
+};
 
-  const increment = () => {
-    setCount(count + 1);
+function App({ initialCharacters = [] }: { initialCharacters?: Character[] }) {
+  const [page, setPage] = useState(1);
+  const [characters, setCharacters] = useState<Character[]>(initialCharacters);
+
+  const loadCharacters = () => {
+    fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setCharacters((prev) => [
+          ...prev,
+          ...data.results.map(
+            (character: {
+              id: string;
+              image: string;
+              name: string;
+              url: string;
+            }) => ({
+              id: character.id,
+              img: character.image,
+              name: character.name,
+              url: character.url,
+            })
+          ),
+        ]);
+      });
   };
 
-  console.log("render");
-
-  const decrement = () => {
-    setCount(count - 1);
-  };
+  useEffect(() => {
+    loadCharacters();
+  }, [page]);
 
   return (
-    <>
-      <p>{count}</p>
-      <button onClick={increment}>Increment</button>
-      <button onClick={decrement}>Decrement</button>
-    </>
+    <div className="container">
+      <div className="row">
+        <p className="title">Rick and Morty</p>
+      </div>
+      <div className="card-container">
+        {characters.map((character: Character) => (
+          <div className="card" key={character.id}>
+            <img src={character.img} alt={character.name} />
+            <p>{character.name}</p>
+          </div>
+        ))}
+      </div>
+      <button onClick={() => setPage((prev) => prev + 1)}>load more</button>
+    </div>
   );
 }
 
