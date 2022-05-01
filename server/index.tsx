@@ -6,15 +6,17 @@ import path from "path";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 
-import App from "../src/App";
+import LandingPage from "../src/landing/App";
+import CharacterPage from "../src/character/App";
+import Character from "../src/character/Character";
 
 const PORT = 3000;
 
 const app = express();
 
-app.use("^/$", (req, res, next) => {
+app.get("/", (_, res) => {
   fs.readFile(
-    path.resolve("./build/index.html"),
+    path.resolve("./build/landing.index.html"),
     "utf-8",
     async (err, data) => {
       if (err) {
@@ -50,7 +52,54 @@ app.use("^/$", (req, res, next) => {
         data.replace(
           '<div id="root"></div>',
           `<div id="root">${ReactDOMServer.renderToString(
-            <App initialCharacters={fetchRes} />
+            <LandingPage initialCharacters={fetchRes} />
+          )}</div>`
+        )
+      );
+    }
+  );
+});
+
+app.get("/character/:id", (req, res) => {
+  if (Number.isNaN(Number(req.params.id)))
+    return res.sendFile(path.resolve(`./build/${req.params.id}`));
+
+  fs.readFile(
+    path.resolve("./build/character.index.html"),
+    "utf-8",
+    async (err, data) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("Some error happened");
+      }
+
+      const fetchRes: any = await fetch(
+        `https://rickandmortyapi.com/api/character/${req.params.id}`
+      )
+        .then((response) => response.json())
+        .catch((err) => {
+          console.log(err);
+          return {};
+        });
+
+      const characterHTMLData = ReactDOMServer.renderToString(
+        <Character
+          characterData={{
+            id: fetchRes.id,
+            img: fetchRes.image,
+            name: fetchRes.name,
+            status: fetchRes.status,
+            species: fetchRes.species,
+            url: fetchRes.url,
+          }}
+        />
+      );
+
+      return res.send(
+        data.replace(
+          '<div id="root"></div>',
+          `<div id="root">${ReactDOMServer.renderToString(
+            <CharacterPage characterHTMLData={characterHTMLData} />
           )}</div>`
         )
       );

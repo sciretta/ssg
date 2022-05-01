@@ -1,9 +1,9 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-module.exports = {
+module.exports = (env) => ({
   mode: "development",
-  entry: "./src/index.tsx",
+  // entry: "./src/index.tsx",
   module: {
     rules: [
       {
@@ -23,19 +23,19 @@ module.exports = {
   output: {
     filename: "[name].[contenthash].js",
     path: path.resolve(__dirname, "build"),
-    clean: true,
+    // clean: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
       title: "Rick & Morty SSR",
-      filename: "index.html",
+      filename: `${env.page}.index.html`,
       template: "public/index.html",
     }),
     // new NodePolyfillPlugin(),
   ],
   devServer: {
     static: {
-      directory: path.resolve(__dirname, "public"),
+      directory: path.resolve(__dirname, "build"),
     },
     port: 3000,
     open: true,
@@ -43,4 +43,4 @@ module.exports = {
     compress: true,
     historyApiFallback: true,
   },
-};
+});

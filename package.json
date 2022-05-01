@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "dev": "webpack serve",
-    "server": "npm run build && webpack --config server.config.js && node server/main.js"
+    "build-landing-page": "webpack --env page=landing --entry ./src/landing/index.tsx ",
+    "build-character-page": "webpack --env page=character --entry ./src/character/index.tsx ",
+    "dev": "webpack serve --env page=character --entry ./src/character/index.tsx",
+    "server": "npm run build-landing-page && npm run build-character-page && webpack --config server.config.js && node server/main.js"
   },
   "keywords": [],
   "author": "",

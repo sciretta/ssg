@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+import "../App.css";
 
 type Character = {
   id: number;
   img: string;
   name: string;
-  url: string;
 };
 
 function App({ initialCharacters = [] }: { initialCharacters?: Character[] }) {
@@ -19,16 +18,10 @@ function App({ initialCharacters = [] }: { initialCharacters?: Character[] }) {
         setCharacters((prev) => [
           ...prev,
           ...data.results.map(
-            (character: {
-              id: string;
-              image: string;
-              name: string;
-              url: string;
-            }) => ({
+            (character: { id: string; image: string; name: string }) => ({
               id: character.id,
               img: character.image,
               name: character.name,
-              url: character.url,
             })
           ),
         ]);
@@ -46,7 +39,13 @@ function App({ initialCharacters = [] }: { initialCharacters?: Character[] }) {
       </div>
       <div className="card-container">
         {characters.map((character: Character) => (
-          <div className="card" key={character.id}>
+          <div
+            className="card"
+            key={character.id}
+            onClick={() =>
+              open(`http://localhost:3000/character/${character.id}`)
+            }
+          >
             <img src={character.img} alt={character.name} />
             <p>{character.name}</p>
           </div>

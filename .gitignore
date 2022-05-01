@@ -1,1 +1,4 @@
 node_modules
+server/**.css
+server/**.js
+build
