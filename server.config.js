@@ -2,10 +2,10 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // const NodemonPlugin = require("nodemon-webpack-plugin");
 
-module.exports = {
-  mode: "development",
+module.exports = (env) => ({
+  mode: "production",
   target: "node",
-  entry: "./server/index.tsx",
+  entry: `./server/${env.target}.tsx`,
   module: {
     rules: [
       {
@@ -25,9 +25,9 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "[name].js",
+    filename: `${env.target}.js`,
     path: path.resolve(__dirname, "server"),
   },
   plugins: [new MiniCssExtractPlugin()],
   // plugins: [new NodemonPlugin()], // "start": "webpack --config server.config.js --watch"
-};
+});

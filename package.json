@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-landing-page": "webpack --env page=landing --entry ./src/landing/index.tsx ",
-    "build-character-page": "webpack --env page=character --entry ./src/character/index.tsx ",
+    "build-landing-page": "webpack --env page=landing --entry ./src/landing/index.tsx && npm run generate-static-files landing",
+    "build-character-page": "webpack --env page=character --entry ./src/character/index.tsx && npm run generate-static-files character",
     "dev": "webpack serve --env page=character --entry ./src/character/index.tsx",
-    "server": "npm run build-landing-page && npm run build-character-page && webpack --config server.config.js && node server/main.js"
+    "generate-static-files": "webpack --env target=generator --config server.config.js && node server/generator.js",
+    "server": "npm run build-landing-page && npm run build-character-page && webpack --env target=server --config server.config.js && node server/server.js"
   },
   "keywords": [],
   "author": "",

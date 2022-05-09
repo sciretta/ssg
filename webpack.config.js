@@ -2,7 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (env) => ({
-  mode: "development",
+  mode: "production",
   // entry: "./src/index.tsx",
   module: {
     rules: [
