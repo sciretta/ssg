@@ -1,0 +1,13 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-message:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Echo message
+        run: echo "Test message"
