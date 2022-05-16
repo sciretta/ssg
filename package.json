@@ -8,7 +8,8 @@
     "build-character-page": "webpack --env page=character --entry ./src/character/index.tsx && npm run generate-static-files character",
     "dev": "webpack serve --env page=character --entry ./src/character/index.tsx",
     "generate-static-files": "webpack --env target=generator --config server.config.js && node server/generator.js",
-    "server": "npm run build-landing-page && npm run build-character-page && webpack --env target=server --config server.config.js && node server/server.js"
+    "server": "npm run build-landing-page && npm run build-character-page && webpack --env target=server --config server.config.js && node server/server.js",
+    "cypress-open": "cypress open"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "@types/react": "^18.0.1",
     "@types/react-dom": "^18.0.0",
     "css-loader": "^6.7.1",
+    "cypress": "^9.6.1",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.0",
     "style-loader": "^3.3.1",
